@@ -23,4 +23,4 @@ export const clientRequest = axios.create({
 });
 
 export const COOKIE_NAME = process.env.COOKIE_NAME || 'cookie-name-not-set';
-export const TOKEN_SECRET = new TextEncoder().encode(process.env.TOKEN_SECRET || 'token-secret-name-not-set');
+export const TOKEN_SECRET = new TextEncoder().encode(process.env.TOKEN_SECRET);

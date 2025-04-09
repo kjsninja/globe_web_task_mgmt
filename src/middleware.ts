@@ -17,19 +17,21 @@ export async function middleware(req: NextRequest) {
 
   // check if token expiration is valid
   // before calling again another route
-  if(!await verifyToken(token)){
-    await removeSession();
-    token = '';
-  }else{
-    // check now the db if session is not yet deleted
-    const isValidToken = await fromBackend.post('/api/auth/validate', {}, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-    if(isValidToken.status != 200){
+  if(token){
+    if(!await verifyToken(token)){
       await removeSession();
       token = '';
+    }else{
+      // check now the db if session is not yet deleted
+      const isValidToken = await fromBackend.post('/api/auth/validate', {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if(isValidToken.status != 200){
+        await removeSession();
+        token = '';
+      }
     }
   }
 
