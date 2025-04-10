@@ -4,9 +4,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
+  SheetDescription
 } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +16,8 @@ import { z } from "zod"
 import { clientRequest } from "@/lib/utils"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { toast } from "sonner"
+import { Separator } from "@/components/ui/separator"
+import { DeleteAccountDialog } from "./DeleteAccountDialog"
 
 interface SheetProps {
   open: boolean,
@@ -28,6 +28,7 @@ interface SheetProps {
 
 export default function ProfileSheet(props: SheetProps) {
   const [loading, setLoading] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
   const [mainError, setMainError] = useState('');
 
   useEffect(()=>{
@@ -52,6 +53,9 @@ export default function ProfileSheet(props: SheetProps) {
     if(result.status == 200){
       setLoading(false);
       props.onUpdate({ ...props.userProfile, name: result.data.data.name })
+      toast.success("Success!", {
+        description: "You have successfully updated your name."
+      })
       props.handleOpenSheet(false);
     }else{
       console.log(result);
@@ -59,7 +63,7 @@ export default function ProfileSheet(props: SheetProps) {
     }
     setLoading(false);
   }
-
+  
 
   return <Sheet open={props.open} onOpenChange={
     (open: boolean)=>{
@@ -106,16 +110,16 @@ export default function ProfileSheet(props: SheetProps) {
                   </FormItem>
                 )}
               />
-            {/* <div className="grid grid-cols-4 items-center gap-4">
-              <div className="text-right col-span-1">Email</div>
-              <Input disabled defaultValue={props.userProfile.email} className="col-span-3" />
-            </div> */}
-            <SheetFooter>
-              <Button disabled={loading} type="submit">Submit</Button>
-            </SheetFooter>
+              <Button disabled={loading} type="submit">Update!</Button>
           </form>
         </Form>
+        <Separator />
+        <br />
+        <Button variant="outline" className="text-red-500" onClick={()=>{
+          setDeleteDialog(true);
+        }}>Delete your account</Button>
       </div>
     </SheetContent>
+    <DeleteAccountDialog open={deleteDialog} setOpen={setDeleteDialog} />
   </Sheet>
 }

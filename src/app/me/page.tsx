@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import AddTaskForm from "@/app/_component/AddTaskForm";
 import EditableContent from "@/app/_component/EditableContent";
 import { NewTaskSchema } from "@/lib/dto/task";
@@ -292,7 +292,8 @@ export default function MePage() {
       <Dialog open={openTaskDialog} onOpenChange={setOpenTaskDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add new task</DialogTitle>
+            <DialogTitle>New Task</DialogTitle>
+            <DialogDescription>Tasking made easy!</DialogDescription>
             <AddTaskForm onSuccess={onTaskAdd}/>
           </DialogHeader>
         </DialogContent>
