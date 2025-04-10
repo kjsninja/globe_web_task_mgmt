@@ -38,7 +38,6 @@ export default function MePage() {
   
   const [tasks, setTasks] = useState<TaskObject[]>([]);
   const [tasksGrouped, setTasksGrouped] = useState<GroupedTaskByDate>({});
-  const [sessions, setSessions] = useState([]);
 
   const [selectedTask, setSelectedTask] = useState<TaskObject | undefined>()
 
