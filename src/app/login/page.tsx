@@ -42,7 +42,6 @@ export default function LoginPage() {
       setLoading(false);
       redirect('/me', RedirectType.push);
     }else{
-      console.log(result);
       setMainError(result.data.message);
     }
     setLoading(false);

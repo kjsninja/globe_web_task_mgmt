@@ -27,7 +27,6 @@ export default function Logout(props: LogoutProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   const handleLogout = async ()=>{
-    console.log('clicked;);')
     const result = await clientRequest.post('/api/logout');
     const data = await result;
     if(data.status == 200){

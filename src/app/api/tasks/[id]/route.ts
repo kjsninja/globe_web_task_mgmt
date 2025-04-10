@@ -17,7 +17,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
   });
   const returnData = await botRequest;
-  console.log(returnData);
   return NextResponse.json(returnData.data, { status: returnData.status });
 }
 

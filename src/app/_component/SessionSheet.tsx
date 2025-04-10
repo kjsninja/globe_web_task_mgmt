@@ -47,7 +47,6 @@ export default function SessionSheet(props: SheetProps) {
     const sessionResult = await clientRequest.get('/api/sessions');
     if(sessionResult.status == 200){
       setSessions(sessionResult.data);
-      console.log(sessions);
     }
     setSessionLoading(false);
   }
@@ -63,7 +62,6 @@ export default function SessionSheet(props: SheetProps) {
   }, [])
 
   useEffect(()=>{
-    console.log(sessions);
     if(sessions.length > 0){
       setSessionsGrouped(groupByDate(sessions));
     }

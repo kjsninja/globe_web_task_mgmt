@@ -14,7 +14,6 @@ export async function createSession(token: string) {
     sameSite: 'lax',
     path: '/',
   })
-  console.log(resp);
 } 
 
 export const hasSession = async () => {
@@ -31,7 +30,7 @@ export const verifyToken = async (token: string)=>{
     await jwtVerify(token, TOKEN_SECRET)
     return true;
   }catch(e){
-    console.log(e);
+    console.error('Token Error', e);
     return false;
   }
 }
