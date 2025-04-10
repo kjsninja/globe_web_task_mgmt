@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { fromBackend } from "./lib/utils";
 
 // 1. Specify protected and public routes
-const protectedRoutes = ['/me', '/me/tasks', '/me/sessions']
+const protectedRoutes = ['/me', '/me/tasks']
 const publicRoutes = ['/login', '/signup', '/']
 
 export async function middleware(req: NextRequest) {
