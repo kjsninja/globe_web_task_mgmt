@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Management Web App
 
-## Getting Started
+Task management made easy for you.
 
-First, run the development server:
+## Demo
+<img src='./_docs/demo.gif'/>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Prerequisite
+
+- You need node version `v22.13.0` or above
+
+## Setup
+
+1. Install dependencies
+
+```
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Configure your `.env`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+cp sample.env .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Supply the necessary configs
 
-## Learn More
+```
+APP_NAME=TASK_MGMT_WEB
 
-To learn more about Next.js, take a look at the following resources:
+# URL of the api
+API_URL=http://localhost:3001
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+SESSION_SECRET=YOUR_SESION_SECRET
+COOKIE_NAME=YOUR_COOKIE_NAME
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# This should be equal to the backend secret
+# to verify the JWT properly
+TOKEN_SECRET=YOUR_TOKEN_SECRET_SAME_WITH_BACKEND
+```
 
-## Deploy on Vercel
+4. Run the development environment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Run in prod environment
+
+```
+npm run build
+```
