@@ -22,6 +22,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import AddTaskForm from "@/app/_component/AddTaskForm";
 import EditableContent from "@/app/_component/EditableContent";
 import { NewTaskSchema } from "@/lib/dto/task";
+import FullPageLoader from "../_component/Loader";
 
 interface GroupedTaskByDate {
   [id: string]: TaskObject[]
@@ -32,9 +33,12 @@ export default function MePage() {
   const [openProfileSheet, setOpenProfileSheet] = useState(false);
   const [openSessionSheet, setOpenSessionSheet] = useState(false);
   const [openTaskDialog, setOpenTaskDialog] = useState(false);
-  const [userProfile, setUserProfile] = useState<User>();
+  const [userProfile, setUserProfile] = useState<User>({
+    email: '',
+    name: ''
+  });
 
-  const [taskLoading, setTaskLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const [tasks, setTasks] = useState<TaskObject[]>([]);
   const [tasksGrouped, setTasksGrouped] = useState<GroupedTaskByDate>({});
@@ -48,12 +52,12 @@ export default function MePage() {
   }, {})
 
   const getTasks = async () => {
-    setTaskLoading(true);
+    setIsLoading(true);
     const taskResult = await clientRequest.get('/api/tasks');
     if(taskResult.status == 200){
       setTasks(taskResult.data);
     }
-    setTaskLoading(false);
+    setIsLoading(false);
   }
 
   const handleLogoutDialog = (state: boolean) => {
@@ -69,20 +73,22 @@ export default function MePage() {
   }
 
   const handleDelete = async (task: TaskObject) => {
+    setIsLoading(true);
     const taskResult = await clientRequest.delete(`/api/tasks/${task.id}`);
     const deleteData = await taskResult;
     if(deleteData.status == 200){
-      toast("Success!", {
+      toast.success("Success!", {
         description: <>Successfully deleted the task <strong>{task.title}</strong>.</>,
         className: "text-black"
       });
       await getTasks();
     }else{
-      toast("Uh oh! Something went wrong.", {
+      toast.error("Uh oh! Something went wrong.", {
         description: <>There is problem with your request..</>,
         className: "text-black"
       });
     }
+    setIsLoading(false);
   }
 
   const handleAdd = () => {
@@ -90,6 +96,7 @@ export default function MePage() {
   }
 
   const updateTaskStatus = async(t: TaskObject, isComplete: boolean) => {
+    setIsLoading(true);
     const taskResult = await clientRequest.put(`/api/tasks/${t.id}`, {
       status: isComplete ? TaskStatus.COMPLETED : TaskStatus.PENDING
     });
@@ -105,25 +112,27 @@ export default function MePage() {
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       }))
       if(isComplete){
-        toast("Completed Task!", {
+        toast.success("Completed Task!", {
           description: <>Congratulation on completing the task <strong>{t.title}</strong>.</>,
           className: "text-black"
         });
       }else{
-        toast("Pending Task!", {
+        toast.success("Pending Task!", {
           description: <>You can work on the task <strong>{t.title}</strong> later.</>,
           className: "text-black"
         });
       }
     }else{
-      toast("Uh oh! Something went wrong.", {
+      toast.error("Uh oh! Something went wrong.", {
         description: <>There is problem with your request..</>,
         className: "text-black"
       });
     }
+    setIsLoading(false);
   }
 
   const handleEditTask = async (t: TaskObject, payload: TaskEditPayload) => {    
+    setIsLoading(true);
     const validateResult = NewTaskSchema.safeParse(payload)
     if(!validateResult){
       setTasks(tasks);
@@ -145,21 +154,21 @@ export default function MePage() {
         }).sort((a:TaskObject, b:TaskObject)=>{
           return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         }))
-        toast("Success!", {
+        toast.success("Success!", {
           description: <>Successfully updated the task <strong>{t.title}</strong>.</>,
           className: "text-black"
         });
       }else{
-        toast("Uh oh! Something went wrong.", {
+        toast.error("Uh oh! Something went wrong.", {
           description: <>There is problem with your request..</>,
           className: "text-black"
         });
       }
     }
+    setIsLoading(false);
   }
 
   const onTaskAdd = async (state: boolean) => {
-    console.log("triggered");
     await getTasks()
     setOpenTaskDialog(state);
   }
@@ -169,7 +178,6 @@ export default function MePage() {
   }, [])
 
   useEffect(()=>{
-    console.log(tasks);
     if(tasks.length > 0){
       setSelectedTask(tasks[0]);
       setTasksGrouped(groupByDate(tasks));
@@ -202,24 +210,22 @@ export default function MePage() {
                 selectedTask={selectedTask}
                 setSelectedTask={setSelectedTask}
                 handleAdd={handleAdd}
-                handleDelete={(task: TaskObject)=>{handleDelete(task)}}
+                handleDelete={(task)=>{handleDelete(task)}}
               />
             </SheetContent>
             <h1 className="font-semibold text-lg">Task Manager</h1>
           </Sheet>
           <SessionSheet open={openSessionSheet} handleOpenSheet={handleSessionSheet} />
-          <ProfileSheet user={userProfile} open={openProfileSheet} handleOpenSheet={handleProfileSheet} />
         </div>
 
         {/* Avatar Button (Visible on all screen sizes, next to the title on small screens) */}
         
         <div className="flex items-center gap-2 ml-auto">
-          <ProfileSetting handleSignOut={()=>{handleLogoutDialog(true)}} handleManageSessions={()=>{handleSessionSheet(true)}} 
-            handleProfileView={(user: User | undefined)=>{
-              setUserProfile(user);
-              handleProfileSheet(true)
-            }} 
+          <ProfileSetting name={userProfile.name} handleSignOut={()=>{handleLogoutDialog(true)}} handleManageSessions={()=>{handleSessionSheet(true)}} 
+            onProfileLoaded={(u)=> setUserProfile(u)}
+            handleProfileView={()=>{handleProfileSheet(true)}} 
           />
+        <ProfileSheet userProfile={userProfile} open={openProfileSheet} handleOpenSheet={handleProfileSheet} onUpdate={(u)=>setUserProfile(u)} />
         </div>
       </header>
 
@@ -231,7 +237,7 @@ export default function MePage() {
             selectedTask={selectedTask}
             handleAdd={handleAdd}
             setSelectedTask={setSelectedTask}
-            handleDelete={(task: TaskObject)=>{handleDelete(task)}}
+            handleDelete={(task)=>{handleDelete(task)}}
           />
         </div>
 
@@ -257,7 +263,7 @@ export default function MePage() {
               </div>
 
               <div>
-                <EditableContent handleSave={(t: TaskObject, payload: TaskEditPayload) => { handleEditTask(t, payload); }} selectedTask={selectedTask} key={selectedTask.id} />
+                <EditableContent handleSave={(t, payload) => { handleEditTask(t, payload); }} selectedTask={selectedTask} key={selectedTask.id} />
               </div>
             </>
           ) : (
@@ -277,6 +283,7 @@ export default function MePage() {
         </section>
       </main>
       <Logout open={openLogoutDialog} handleOpenDialog={handleLogoutDialog}/>
+      <FullPageLoader loading={isLoading} />
       <Dialog open={openTaskDialog} onOpenChange={setOpenTaskDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
