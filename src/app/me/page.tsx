@@ -235,13 +235,14 @@ export default function MePage() {
       {/* Body */}
       <main className="flex flex-1 overflow-hidden">
         <div className="hidden sm:flex border-r">
-          <Sidebar
+        { selectedTask && <Sidebar
             tasksGrouped={tasksGrouped}
             selectedTask={selectedTask}
             handleAdd={handleAdd}
             setSelectedTask={setSelectedTask}
             handleDelete={(task)=>{handleDelete(task)}}
           />
+        }
         </div>
 
         <section className="flex-1 p-4 overflow-y-auto">
@@ -275,8 +276,8 @@ export default function MePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v12a2 2 0 01-2 2z" />
               </svg>
               <div>
-                <p className="text-sm font-medium">No task selected</p>
-                <p className="text-xs text-muted-foreground">Please select or add a task to get started.</p>
+                <p className="text-sm font-medium">Create your first task!</p>
+                <p className="text-xs text-muted-foreground">Managing your task made easy for you.</p>
               </div>
               <Button size="sm" onClick={() => {handleAdd()}}>
                 + Add Task
@@ -326,9 +327,9 @@ function Sidebar({ tasksGrouped, selectedTask, setSelectedTask, handleDelete, ha
               )}
               onClick={() => setSelectedTask(t)}
             >
-              <div className={cn(t.status === TaskStatus.COMPLETED  && "text-muted-foreground line-through")}> 
-                <div className="font-medium">{t.title}</div>
-                <div className="text-xs text-muted-foreground">{t.updatedAt}</div>
+              <div className={cn("flex-1 max-w-[200px] min-w-[200px] max-h-[48px] overflow-hidden", t.status === TaskStatus.COMPLETED  && "text-muted-foreground line-through")}> 
+                <div className="font-medium truncate">{t.title}</div>
+                <div className="text-xs text-muted-foreground truncate">{DateFormatter.format(t.updatedAt, 'MMM d, yyyy')}</div>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <Badge variant={t.status == TaskStatus.COMPLETED ? "default" : "outline"}>

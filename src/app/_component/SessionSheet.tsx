@@ -95,9 +95,11 @@ export default function SessionSheet(props: SheetProps) {
                 <div className="px-4 py-2 text-xs text-muted-foreground bg-muted border-t sticky top-0 z-10">{date}</div>
                 {tasks.map((t:SessionObject) => (
                   <div key={t.id} className="p-4 border-b cursor-pointer hover:bg-muted/50 flex justify-between items-start">
-                    <div className="font-medium"> 
-                      <div className="font-medium">{t.metadata.agent}</div>
-                      <div className="text-xs text-muted-foreground">{t.createdAt}</div>
+                    <div className="font-medium max-w-[200px] max-h-[48px] overflow-hidden">
+                      <div className="font-medium truncate">{t.metadata.agent}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {DateFormatter.format(t.createdAt, "MMM d, yyyy")}
+                      </div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       <Button variant="link" size="sm" className="text-red-500 px-0" onClick={()=>{handleDelete(t.id)}}>

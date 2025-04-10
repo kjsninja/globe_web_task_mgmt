@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,6 +18,8 @@ import { Input } from "@/components/ui/input"
 import { redirect, RedirectType } from "next/navigation";
 import { useState } from "react";
 import { clientRequest } from "@/lib/utils";
+import FullPageLoader from "../_component/Loader";
+import Link from "next/link";
 
 
 export default function SignUp() {
@@ -55,63 +58,66 @@ export default function SignUp() {
   }
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>Sign-Up</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={  form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Type your email..." {...field} />
-                  </FormControl>
-                  {form.formState.errors.email && <FormMessage>{form.formState.errors.email.message}</FormMessage>}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="Type your password..." {...field} />
-                  </FormControl>
-                  {form.formState.errors.password && <FormMessage>{form.formState.errors.password.message}</FormMessage>}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Type your name here..." {...field} />
-                  </FormControl>
-                  {form.formState.errors.name && <FormMessage>{form.formState.errors.name.message}</FormMessage>}
-                </FormItem>
-              )}
-            />
-            {mainError && <FormMessage>{mainError}</FormMessage>}
-            <Button disabled={loading} type="submit">Submit</Button>
-          </form>
-        </Form>
-      </CardContent>
-      {/* <CardFooter className="flex w-full">
-        <div>
-        <Separator className="my-4" />
-        <Button>Signup</Button>
-        </div>
-      </CardFooter> */}
-    </Card>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-center">Signup</CardTitle>
+          <CardDescription className="flex items-center justify-center">First step to manage your task.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={  form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Type your name here..." {...field} />
+                    </FormControl>
+                    {form.formState.errors.name && <FormMessage>{form.formState.errors.name.message}</FormMessage>}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Type your email..." {...field} />
+                    </FormControl>
+                    {form.formState.errors.email && <FormMessage>{form.formState.errors.email.message}</FormMessage>}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Type your password..." {...field} />
+                    </FormControl>
+                    {form.formState.errors.password && <FormMessage>{form.formState.errors.password.message}</FormMessage>}
+                  </FormItem>
+                )}
+              />
+              {mainError && <FormMessage>{mainError}</FormMessage>}
+              <div className="space-y-3">
+                <Button disabled={loading} className="w-full" type="submit">Submit</Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/login">Back to login</Link>
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <FullPageLoader loading={loading} />
+    </div>
   )
 }
