@@ -11,6 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { clientRequest } from "@/lib/utils"
 import { z } from "zod"
+import { toast } from "sonner"
+import FullPageLoader from "./Loader"
 
 interface TaskFormEvents {
   onSuccess: (state: boolean) => void
@@ -36,11 +38,12 @@ export default function AddTaskForm(props: TaskFormEvents) {
     const resp = await clientRequest.post('/api/tasks', values);
     const result = await resp;
     if(result.status == 201){
-      console.log(result);
       setLoading(false);
       props.onSuccess(false);
+      toast.success("Success!", {
+        description: "You have added new task!"
+      })
     }else{
-      console.log(result);
       setMainError(result.data.message);
     }
     setLoading(false);
@@ -78,6 +81,7 @@ export default function AddTaskForm(props: TaskFormEvents) {
         {mainError && <FormMessage>{mainError}</FormMessage>}
         <Button disabled={loading} type="submit">Submit</Button>
       </form>
+      <FullPageLoader loading={loading} />
     </Form>
   )
 }
