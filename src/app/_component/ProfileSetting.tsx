@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { clientRequest } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"  // Import Avatar for user profile
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"  // Import Avatar for user profile
 import { User } from "@/lib/definitions";
 
 interface ProfileSettingProps {
@@ -49,6 +49,7 @@ export default function ProfileSetting(props: ProfileSettingProps) {
         <div className="flex items-center gap-2 cursor-pointer">
           <Avatar>
             <AvatarImage src={`https://robohash.org/${user?.email}?set=set4&bgset=&size=40x40`} alt="User Avatar" />
+            <AvatarFallback>NA</AvatarFallback>
           </Avatar>
           <span className="hidden sm:block">{user?.name}</span>
         </div>
