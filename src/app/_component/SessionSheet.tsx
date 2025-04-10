@@ -39,11 +39,13 @@ export default function SessionSheet(props: SheetProps) {
     const deleteData = await sessionResult;
     if(deleteData.status == 200){
       toast.success("Success!", {
-        description: "Successfully deleted a session."
+        description: <div className="text-black">Successfully deleted a session.</div>
       });
       await getSessions();
     }else{
-      toast.error("There is problem with your request.");
+      toast.error("Uh. Oh!", {
+        description: <div className="text-black">There is problem with your request.</div>
+      });
     }
     setSessionLoading(false);
   }

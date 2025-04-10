@@ -54,7 +54,7 @@ export default function ProfileSheet(props: SheetProps) {
       setLoading(false);
       props.onUpdate({ ...props.userProfile, name: result.data.data.name })
       toast.success("Success!", {
-        description: "You have successfully updated your name."
+        description: <div className="text-black">You have successfully updated your name.</div>
       })
       props.handleOpenSheet(false);
     }else{

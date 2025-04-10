@@ -34,7 +34,9 @@ export default function Logout(props: LogoutProps) {
     if(data.status == 200){
       redirect('/login', RedirectType.push);
     }else{
-      toast("There is problem with the request.")
+      toast.error("Uh. Oh!", {
+        description: <div className="text-black">There is problem with the request.</div>
+      });
     }
     setIsLoggingOut(false);
   }

@@ -32,7 +32,7 @@ export function DeleteAccountDialog(props: DeleteDialogProps) {
       redirect('/login', RedirectType.push);
     }else{
       toast.error("Uh. Oh! Failed!", {
-        description: "There is problem with the request."
+        description: <div className="text-black">There is problem with the request.</div>
       });
     }
     setIsLoading(false);

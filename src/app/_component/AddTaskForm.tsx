@@ -41,7 +41,7 @@ export default function AddTaskForm(props: TaskFormEvents) {
       setLoading(false);
       props.onSuccess(false);
       toast.success("Success!", {
-        description: "You have added new task!"
+        description: <div className="text-black">You have added new task!</div>
       })
     }else{
       setMainError(result.data.message);

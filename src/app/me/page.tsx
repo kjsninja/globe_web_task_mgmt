@@ -82,14 +82,12 @@ export default function MePage() {
     const deleteData = await taskResult;
     if(deleteData.status == 200){
       toast.success("Success!", {
-        description: <>Successfully deleted the task <strong>{task.title}</strong>.</>,
-        className: "text-black"
+        description: <div className="text-black">Successfully deleted the task <strong>{task.title}</strong>.</div>
       });
       await getTasks();
     }else{
       toast.error("Uh oh! Something went wrong.", {
-        description: <>There is problem with your request..</>,
-        className: "text-black"
+        description: <div className="text-black">There is problem with your request..</div>
       });
     }
     setIsLoading(false);
@@ -116,20 +114,17 @@ export default function MePage() {
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       }))
       if(isComplete){
-        toast.success("Completed Task!", {
-          description: <>Congratulation on completing the task <strong>{t.title}</strong>.</>,
-          className: "text-black"
+        toast.success("Task Complete!", {
+          description: <div className="text-black">Congratulation on completing the task <strong>{t.title}</strong>.</div>
         });
       }else{
         toast.success("Pending Task!", {
-          description: <>You can work on the task <strong>{t.title}</strong> later.</>,
-          className: "text-black"
+          description: <div className="text-black">You can work on the task <strong>{t.title}</strong> later.</div>
         });
       }
     }else{
       toast.error("Uh oh! Something went wrong.", {
-        description: <>There is problem with your request..</>,
-        className: "text-black"
+        description: <div className="text-black">There is problem with your request..</div>
       });
     }
     setIsLoading(false);
@@ -138,8 +133,11 @@ export default function MePage() {
   const handleEditTask = async (t: TaskObject, payload: TaskEditPayload) => {    
     setIsLoading(true);
     const validateResult = NewTaskSchema.safeParse(payload)
-    if(!validateResult){
-      setTasks(tasks);
+    if(validateResult.success == false){
+      toast.error("Uh. Oh!", {
+        description: <div className="text-black">{validateResult.error.issues.map(e=>e.message).join('\n')}</div>
+      });
+      await getTasks()
     }else{
       const taskResult = await clientRequest.put(`/api/tasks/${t.id}`, {
         title: payload.title,
@@ -158,14 +156,12 @@ export default function MePage() {
         }).sort((a:TaskObject, b:TaskObject)=>{
           return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         }))
-        toast.success("Success!", {
-          description: <>Successfully updated the task <strong>{t.title}</strong>.</>,
-          className: "text-black"
+        toast.success("Saved!", {
+          description: <div className="text-black">Successfully updated the task <strong>{t.title}</strong>.</div>
         });
       }else{
         toast.error("Uh oh! Something went wrong.", {
-          description: <>There is problem with your request..</>,
-          className: "text-black"
+          description: <div className="text-black">There is problem with your request..</div>
         });
       }
     }
