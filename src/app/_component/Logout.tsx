@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect, RedirectType } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   AlertDialog,
@@ -18,11 +18,16 @@ import { clientRequest } from "@/lib/utils";
 
 import { toast } from "sonner";
 
-export default function Logout() {
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+interface LogoutProps {
+  open: boolean,
+  handleOpenDialog: (state: boolean) => void
+}
 
+export default function Logout(props: LogoutProps) {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
   const handleLogout = async ()=>{
-    console.log('logout');
+    console.log('clicked;);')
     const result = await clientRequest.post('/api/logout');
     const data = await result;
     if(data.status == 200){
@@ -32,13 +37,11 @@ export default function Logout() {
     }
     setIsLoggingOut(false);
   }
-  
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger className="hover:bg-gray-100 hover:cursor-pointer rounded-sm px-2 py-1.5 text-sm text-start outline-hidden w-full">
-        Signout
-      </AlertDialogTrigger>
+    <AlertDialog open={props.open} onOpenChange={(open: boolean)=>{
+      props.handleOpenDialog(open)
+    }}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
