@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect, RedirectType } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   AlertDialog,

@@ -21,3 +21,18 @@ export type TaskObject = {
   title: string
   updatedAt: string
 }
+
+export type NewTask = {
+  title: string;
+  content: string;
+}
+
+export type TaskEditPayload = {
+  title: string
+  content: string
+}
+
+export type User = {
+  name: string;
+  email: string;
+}
