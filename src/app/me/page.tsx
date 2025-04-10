@@ -1,6 +1,6 @@
 "use client";
 
-import { clientRequest } from "@/lib/utils";
+import { clientRequest, DateFormatter } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -18,11 +18,12 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner";
 
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import AddTaskForm from "@/app/_component/AddTaskForm";
 import EditableContent from "@/app/_component/EditableContent";
 import { NewTaskSchema } from "@/lib/dto/task";
-import FullPageLoader from "../_component/Loader";
+import FullPageLoader from "@/app/_component/Loader";
+import getNow from "@/lib/getNow";
 
 interface GroupedTaskByDate {
   [id: string]: TaskObject[]
@@ -45,9 +46,12 @@ export default function MePage() {
 
   const [selectedTask, setSelectedTask] = useState<TaskObject | undefined>()
 
+  const now = getNow();
+
   const groupByDate = (tasks: TaskObject[]) => tasks.reduce((acc: GroupedTaskByDate, t: TaskObject) => {
-    acc[t.updatedAt] = acc[t.updatedAt] || []
-    acc[t.updatedAt].push(t)
+    const keyDate = DateFormatter.formatDistance(t.updatedAt, now, {addSuffix: true});
+    acc[keyDate] = acc[keyDate] || []
+    acc[keyDate].push(t)
     return acc
   }, {})
 
@@ -215,7 +219,6 @@ export default function MePage() {
             </SheetContent>
             <h1 className="font-semibold text-lg">Task Manager</h1>
           </Sheet>
-          <SessionSheet open={openSessionSheet} handleOpenSheet={handleSessionSheet} />
         </div>
 
         {/* Avatar Button (Visible on all screen sizes, next to the title on small screens) */}
@@ -231,7 +234,7 @@ export default function MePage() {
 
       {/* Body */}
       <main className="flex flex-1 overflow-hidden">
-        <div className="hidden sm:flex sm:w-1/4 border-r">
+        <div className="hidden sm:flex border-r">
           <Sidebar
             tasksGrouped={tasksGrouped}
             selectedTask={selectedTask}
@@ -245,8 +248,8 @@ export default function MePage() {
           {selectedTask ? (
             <>
               <div className="flex justify-between items-center mb-2">
-                <div className="text-sm text-muted-foreground flex-1 flex justify-center">
-                  {selectedTask.updatedAt}
+                <div className="text-sm text-muted-foreground flex-1 flex">
+                  {DateFormatter.format(selectedTask.updatedAt, 'MMM d, yyyy')}
                 </div>
                 <div className="flex items-center space-x-2">
                   <Switch checked={selectedTask.status === TaskStatus.COMPLETED ? true : false} onCheckedChange={(checked)=>{updateTaskStatus(selectedTask, checked)}} />
@@ -282,6 +285,7 @@ export default function MePage() {
           )}
         </section>
       </main>
+      <SessionSheet open={openSessionSheet} handleOpenSheet={handleSessionSheet} />
       <Logout open={openLogoutDialog} handleOpenDialog={handleLogoutDialog}/>
       <FullPageLoader loading={isLoading} />
       <Dialog open={openTaskDialog} onOpenChange={setOpenTaskDialog}>
@@ -306,7 +310,7 @@ interface SideBarProps {
 
 function Sidebar({ tasksGrouped, selectedTask, setSelectedTask, handleDelete, handleAdd }: SideBarProps) {
   return (
-    <ScrollArea className="h-full w-full">
+    <ScrollArea className="max-h-[100vh] overflow-y-auto">
       <div className="p-4 border-b">
         <Button size="sm" onClick={()=>{handleAdd()}}>Add</Button>
       </div>

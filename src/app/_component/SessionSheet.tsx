@@ -10,10 +10,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-import { clientRequest } from "@/lib/utils";
+import { clientRequest, DateFormatter } from "@/lib/utils";
 import { SessionObject } from "@/lib/definitions"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner";
+import getNow from "@/lib/getNow";
+import FullPageLoader from "./Loader";
 
 interface SheetProps {
   open: boolean,
@@ -30,16 +32,20 @@ export default function SessionSheet(props: SheetProps) {
   const [sessionLoading, setSessionLoading] = useState(false);
 
   const handleDelete = async (id: string) => {
+    setSessionLoading(true);
     const sessionResult = await clientRequest.post('/api/sessions', {
       id
     });
     const deleteData = await sessionResult;
     if(deleteData.status == 200){
-      toast("Successfully deleted a session.");
+      toast.success("Success!", {
+        description: "Successfully deleted a session."
+      });
       await getSessions();
     }else{
-      toast("There is problem with your request.");
+      toast.error("There is problem with your request.");
     }
+    setSessionLoading(false);
   }
 
   const getSessions = async () => {
@@ -51,9 +57,12 @@ export default function SessionSheet(props: SheetProps) {
     setSessionLoading(false);
   }
 
+  const now = getNow();
+
   const groupByDate = (tasks: SessionObject[]) => tasks.reduce((acc: GroupedSessionByDate, t: SessionObject) => {
-      acc[t.createdAt] = acc[t.createdAt] || []
-      acc[t.createdAt].push(t)
+      const keyDate = DateFormatter.formatDistance(t.createdAt, now, {addSuffix: true});
+      acc[keyDate] = acc[keyDate] || []
+      acc[keyDate].push(t)
       return acc
     }, {})
 
@@ -80,10 +89,10 @@ export default function SessionSheet(props: SheetProps) {
               </Badge>
             </SheetDescription>
           </SheetHeader>
-          <ScrollArea className="h-full w-full">
+          <ScrollArea className="max-h-[100vh] overflow-y-auto">
             {Object.entries(sessionsGrouped).map(([date, tasks]) => (
               <div key={date}>
-                <div className="px-4 py-2 text-xs text-muted-foreground border-t sticky top-0 z-10">{date}</div>
+                <div className="px-4 py-2 text-xs text-muted-foreground bg-muted border-t sticky top-0 z-10">{date}</div>
                 {tasks.map((t:SessionObject) => (
                   <div key={t.id} className="p-4 border-b cursor-pointer hover:bg-muted/50 flex justify-between items-start">
                     <div className="font-medium"> 
@@ -99,6 +108,7 @@ export default function SessionSheet(props: SheetProps) {
                 ))}
               </div>
             ))}
+            <FullPageLoader loading={sessionLoading} />
           </ScrollArea>
         </SheetContent>
       </Sheet>
