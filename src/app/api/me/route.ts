@@ -2,7 +2,7 @@ import { hasSession, removeSession } from "@/lib/session";
 import { fromBackend } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   const token = await hasSession();
 
   if(!token){
