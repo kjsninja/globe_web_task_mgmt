@@ -10,11 +10,16 @@ import { User } from "@/lib/definitions";
 interface ProfileSettingProps {
   handleSignOut: () => void
   handleManageSessions: () => void
-  handleProfileView: (user: User | undefined) => void
+  handleProfileView: () => void
+  onProfileLoaded: (user: User) => void
+  name: string | null
 }
 
 export default function ProfileSetting(props: ProfileSettingProps) {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>({
+    name: '',
+    email: ''
+  });
 
   const getUserInfo = async function(){
     const result = await clientRequest.get('/api/me');
@@ -29,8 +34,14 @@ export default function ProfileSetting(props: ProfileSettingProps) {
   }, []);
 
   useEffect(()=>{
-    
-  }, [user]);
+    if(props.name){
+      setUser({...user, name: props.name});
+    }
+  }, [props.name])
+
+  useEffect(()=>{
+    if(user) props.onProfileLoaded(user);
+  }, [user])
 
   return (<>
     <DropdownMenu>
@@ -45,7 +56,7 @@ export default function ProfileSetting(props: ProfileSettingProps) {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Settings</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={()=>{props.handleProfileView(user)}}>
+        <DropdownMenuItem onClick={()=>{props.handleProfileView()}}>
           Profile
         </DropdownMenuItem>
         <DropdownMenuItem onClick={()=>{props.handleManageSessions()}}>
