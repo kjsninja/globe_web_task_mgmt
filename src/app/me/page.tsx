@@ -48,10 +48,16 @@ export default function MePage() {
 
   const now = getNow();
 
+  // const groupByDate = (tasks: TaskObject[]) => tasks.reduce((acc: GroupedTaskByDate, t: TaskObject) => {
+  //   const keyDate = DateFormatter.formatDistance(t.updatedAt, now, {addSuffix: true});
+  //   acc[keyDate] = acc[keyDate] || []
+  //   acc[keyDate].push(t)
+  //   return acc
+  // }, {})
+
   const groupByDate = (tasks: TaskObject[]) => tasks.reduce((acc: GroupedTaskByDate, t: TaskObject) => {
-    const keyDate = DateFormatter.formatDistance(t.updatedAt, now, {addSuffix: true});
-    acc[keyDate] = acc[keyDate] || []
-    acc[keyDate].push(t)
+    acc[t.status] = acc[t.status] || []
+    acc[t.status].push(t)
     return acc
   }, {})
 
@@ -59,7 +65,9 @@ export default function MePage() {
     setIsLoading(true);
     const taskResult = await clientRequest.get('/api/tasks');
     if(taskResult.status == 200){
-      setTasks(taskResult.data);
+      setTasks(taskResult.data.sort((a:TaskObject, b: TaskObject)=>{
+        return a.status.length - b.status.length
+      }));
     }
     setIsLoading(false);
   }
@@ -112,7 +120,10 @@ export default function MePage() {
         return e;
       }).sort((a:TaskObject, b:TaskObject)=>{
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      }))
+      }).sort((a:TaskObject, b: TaskObject)=>{
+        return a.status.length - b.status.length
+      })
+    )
       if(isComplete){
         toast.success("Task Complete!", {
           description: <div className="text-black">Congratulation on completing the task <strong>{t.title}</strong>.</div>
@@ -155,6 +166,8 @@ export default function MePage() {
           return e;
         }).sort((a:TaskObject, b:TaskObject)=>{
           return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        }).sort((a:TaskObject, b: TaskObject)=>{
+          return a.status.length - b.status.length
         }))
         toast.success("Saved!", {
           description: <div className="text-black">Successfully updated the task <strong>{t.title}</strong>.</div>
