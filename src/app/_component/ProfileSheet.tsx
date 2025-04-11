@@ -58,8 +58,10 @@ export default function ProfileSheet(props: SheetProps) {
       })
       props.handleOpenSheet(false);
     }else{
-      console.log(result);
-      setMainError(result.data.error);
+      if(result.data.message) setMainError(result.data.message);
+      toast.error("Uh. Oh!", {
+        description: <div className="text-black">There is problem with yoru request.</div>
+      })
     }
     setLoading(false);
   }

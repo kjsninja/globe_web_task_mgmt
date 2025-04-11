@@ -27,7 +27,6 @@ export function DeleteAccountDialog(props: DeleteDialogProps) {
     setIsLoading(true);
     const resp = await clientRequest.delete('/api/me');
     const respData = await resp;
-    console.log(respData);
     if(respData.status == 200){
       redirect('/login', RedirectType.push);
     }else{
