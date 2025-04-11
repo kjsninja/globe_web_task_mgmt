@@ -17,6 +17,7 @@ export async function GET(request: Request) {
     }
   });
   const returnData = await botRequest;
+  if(returnData.status == 401) await removeSession();
   return NextResponse.json(returnData.data, { status: returnData.status });
 }
 

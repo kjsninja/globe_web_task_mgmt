@@ -6,6 +6,7 @@ import { clientRequest } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"  // Import Avatar for user profile
 import { User } from "@/lib/definitions";
+import { redirect, RedirectType } from "next/navigation";
 
 interface ProfileSettingProps {
   handleSignOut: () => void
@@ -26,6 +27,8 @@ export default function ProfileSetting(props: ProfileSettingProps) {
     const resData = await result;
     if(resData.status == 200){
       setUser(resData.data);
+    }else{
+      redirect('/login', RedirectType.push);
     }
   }
 
@@ -40,7 +43,9 @@ export default function ProfileSetting(props: ProfileSettingProps) {
   }, [props.name])
 
   useEffect(()=>{
-    if(user) props.onProfileLoaded(user);
+    if(user) {
+      props.onProfileLoaded(user);
+    }
   }, [user])
 
   return (<>

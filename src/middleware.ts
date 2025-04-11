@@ -1,18 +1,14 @@
+"use server";
+
 import { NextResponse, type NextRequest } from "next/server";
-import { hasSession, verifyToken, removeSession } from "@/lib/session";
-import { redirect } from "next/navigation";
-import { fromBackend } from "./lib/utils";
+import { hasSession, verifyToken, removeSession, verifyTokenSync } from "@/lib/session";
+import { fromBackend, COOKIE_NAME } from "./lib/utils";
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/me', '/me/tasks']
 const publicRoutes = ['/login', '/signup', '/']
 
-export async function middleware(req: NextRequest) {
-  // 2. Check if the current route is protected or public
-  const path = req.nextUrl.pathname
-  const isProtectedRoute = protectedRoutes.includes(path)
-  const isPublicRoute = publicRoutes.includes(path)
-
+const checkAuthentication = async () =>{
   let token = await hasSession()
 
   // check if token expiration is valid
@@ -35,6 +31,21 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  return token;
+}
+
+export function middleware(req: NextRequest) {
+  // 2. Check if the current route is protected or public
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+
+  let token = req.cookies.get(COOKIE_NAME)?.value;
+
+  checkAuthentication().then(data=>{
+    token = data;
+  }).catch(()=>{})
+
   // 4. Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !token) {
     return NextResponse.redirect(new URL('/login', req.nextUrl))
@@ -54,4 +65,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  // matcher: ['/me', '/login', '/signup'],
 };

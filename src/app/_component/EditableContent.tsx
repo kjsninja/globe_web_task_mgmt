@@ -1,5 +1,5 @@
 import { TaskEditPayload, TaskObject, TaskStatus } from "@/lib/definitions"
-import { cn } from "@/lib/utils";
+import { cn, DateFormatter } from "@/lib/utils";
 import { useState, KeyboardEvent, useEffect, FormEvent, FocusEvent } from "react"
 
 interface EditableProps {
@@ -101,6 +101,9 @@ export default function EditableTask (props: EditableProps) {
 
   return (
     <div>
+      <span className="inline sm:hidden text-sm text-muted-foreground">
+        {DateFormatter.format(props.selectedTask.updatedAt, 'MMM d, yyyy')}
+      </span>
       <h2
         contentEditable
         className={cn("text-2xl font-bold mb-2", props.selectedTask.status === TaskStatus.COMPLETED && "text-muted-foreground line-through")}

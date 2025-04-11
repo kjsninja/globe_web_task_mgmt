@@ -210,8 +210,8 @@ export default function MePage() {
               <Button variant="ghost" size="sm" className="sm:hidden">
                 ☰
               </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-64">
+            </SheetTrigger> 
+            <SheetContent side="left">
               <SheetHeader>
                 <SheetTitle>Tasks</SheetTitle>
                 <SheetDescription>
@@ -258,7 +258,7 @@ export default function MePage() {
           {selectedTask ? (
             <>
               <div className="flex justify-between items-center mb-2">
-                <div className="text-sm text-muted-foreground flex-1 flex">
+                <div className="hidden text-sm sm:flex text-muted-foreground flex-1">
                   {DateFormatter.format(selectedTask.updatedAt, 'MMM d, yyyy')}
                 </div>
                 <div className="flex items-center space-x-2">
@@ -337,7 +337,7 @@ function Sidebar({ tasksGrouped, selectedTask, setSelectedTask, handleDelete, ha
               )}
               onClick={() => setSelectedTask(t)}
             >
-              <div className={cn("flex-1 max-w-[200px] min-w-[200px] max-h-[48px] overflow-hidden", t.status === TaskStatus.COMPLETED  && "text-muted-foreground line-through")}> 
+              <div className={cn("flex-1 sm:max-w-[200px] sm:min-w-[200px] max-h-[48px] overflow-hidden", t.status === TaskStatus.COMPLETED  && "text-muted-foreground line-through")}> 
                 <div className="font-medium truncate">{t.title}</div>
                 <div className="text-xs text-muted-foreground truncate">{DateFormatter.format(t.updatedAt, 'MMM d, yyyy')}</div>
               </div>
