@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse, type NextRequest } from "next/server";
-import { hasSession, verifyToken, removeSession, verifyTokenSync } from "@/lib/session";
+import { hasSession, verifyToken, removeSession } from "@/lib/session";
 import { fromBackend, COOKIE_NAME } from "./lib/utils";
 
 // 1. Specify protected and public routes
