@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "docker:build": "docker compose build",
     "docker:up": "docker compose up -d --remove-orphans",
     "docker:down": "docker compose down",
     "lint": "next lint"
